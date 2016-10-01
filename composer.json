@@ -1,0 +1,24 @@
+{
+  "name": "jlaso/gd-wrapper",
+  "description": "A GD wrapper",
+  "keywords": ["image", "gd", "graphics"],
+  "homepage": "https://github.com/jlaso/gd-wrapper",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Joseluis Laso",
+      "role": "Developer"
+    }
+  ],
+  "version": "1.0",
+  "require": {
+    "php": ">=5.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "JLaso\\GD\\": "src/"
+    }
+  },
+  "minimum-stability": "dev"
+}
