@@ -53,7 +53,7 @@ Example to write polygons:
 php sample-penta.php && open /tmp/penta.png
 ```
 
-![Polygon example](/doc/penta-png)
+![Polygon example](/doc/penta.png)
 
 Example to write text: take a look over sample-text.php
 
