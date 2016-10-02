@@ -15,6 +15,7 @@ final class Image
     const ELLIPSE = 'ellipse';
     const POLYGON = 'polygon';
     const RECTANGLE = 'rectangle';
+    const ARC_PIE = 'arc_pie';
 
     private $image;
     /** @var array */
@@ -72,9 +73,9 @@ final class Image
      */
     public function setFont($font)
     {
-        if(preg_match("/\.ttf$/", $font)){
+        if (preg_match("/\.ttf$/", $font)) {
             $this->font = $font;
-        }else{
+        } else {
             $this->font = $this->fontRepository->getFontFile($font);
         }
 
@@ -125,19 +126,19 @@ final class Image
      */
     protected function toPoint($whatever)
     {
-        if($whatever instanceof Point){
+        if ($whatever instanceof Point) {
             return $whatever;
         }
-        if(is_string($whatever)){
+        if (is_string($whatever)) {
             return $this->getPosition($whatever);
         }
-        if(is_array($whatever) && (2 === count($whatever))){
+        if (is_array($whatever) && (2 === count($whatever))) {
             $x = array_shift($whatever);
             $y = array_shift($whatever);
             return new Point($x, $y);
         }
 
-        throw new \Exception('Position format not recognized in Image::toPoint '.print_r($whatever, true));
+        throw new \Exception('Position format not recognized in Image::toPoint ' . print_r($whatever, true));
     }
 
     /**
@@ -148,7 +149,7 @@ final class Image
      */
     public function setColor($colorName)
     {
-        if(!isset($this->colors[$colorName])){
+        if (!isset($this->colors[$colorName])) {
             throw new \Exception("Color with {$colorName} name is not declared yet");
         }
         $this->color = $this->colors[$colorName];
@@ -178,6 +179,20 @@ final class Image
     }
 
     /**
+     * @param Color[] $colors
+     * @param null|int $alpha
+     * @return $this
+     */
+    public function createColors(array $colors, $alpha = null)
+    {
+        foreach ($colors as $colorName => $color) {
+            $this->createColor($colorName, $color, $alpha);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param string $name
      * @param Point $point
      * @return $this
@@ -196,7 +211,7 @@ final class Image
      */
     public function getPosition($name)
     {
-        if(!isset($this->positions[$name])){
+        if (!isset($this->positions[$name])) {
             throw new \Exception("Position with {$name} name is not declared yet");
         }
 
@@ -255,18 +270,19 @@ final class Image
                 imagefilledellipse($this->image, $arg->center->x, $arg->center->y, $arg->radius, $arg->radius, $this->color);
                 break;
 
-            case ($arg instanceof Arc):
-                /** @var Arc $arg */
-                imagefilledarc($this->image, $arg->center->x, $arg->center->y, $arg->radiusX, $arg->radiusY, 0, 360, $this->color, null);
-                break;
-
+            // must be before Arc
             case ($arg instanceof ArcPie):
                 /** @var ArcPie $arg */
-                imagefilledarc($this->image, $arg->center->x, $arg->center->y, $arg->radiusX, $arg->radiusY, 0, 360, $this->color, IMG_ARC_PIE);
+                imagefilledarc($this->image, $arg->center->x, $arg->center->y, $arg->radiusX, $arg->radiusY, $arg->start, $arg->end, $this->color, IMG_ARC_PIE);
+                break;
+
+            case ($arg instanceof Arc):
+                /** @var Arc $arg */
+                imagefilledarc($this->image, $arg->center->x, $arg->center->y, $arg->radiusX, $arg->radiusY, $arg->start, $arg->end, $this->color, null);
                 break;
 
             default:
-                throw new \Exception('Object not recognized "'.get_class($arg).'" in Image::fill');
+                throw new \Exception('Object not recognized "' . get_class($arg) . '" in Image::fill');
 
         }
 
@@ -330,10 +346,10 @@ final class Image
      */
     public function buildPalette($colors, $alpha = null)
     {
-        if(!isset($colors['black'])){
+        if (!isset($colors['black'])) {
             $colors['black'] = new Color('000');
         }
-        if(!isset($colors['white'])){
+        if (!isset($colors['white'])) {
             $colors['white'] = new Color('fff');
         }
         $this->createColor('transparent', new Color('fff'), 127);
@@ -378,7 +394,7 @@ final class Image
 
     public function factory($objType, $position, ...$args)
     {
-        if(self::POLYGON !== $objType) {
+        if (self::POLYGON !== $objType) {
             $position = $this->toPoint($position);
         }
 
@@ -398,9 +414,22 @@ final class Image
             case self::RECTANGLE:
                 return new Rectangle($position, $this->toPoint(array_shift($args)));
                 break;
+
+            case self::ARC_PIE:
+                return new ArcPie($position, array_shift($args), array_shift($args), array_shift($args), array_shift($args));
+                break;
         }
     }
 
+    /**
+     * @param int $w
+     * @param int $h
+     * @param string $text
+     * @param Shadow|null $shadow
+     * @param array $padding
+     * @param int $angle
+     * @return $this
+     */
     public function writeText($w, $h, $text, Shadow $shadow = null, array $padding = [], $angle = 0)
     {
         // figure font-size out

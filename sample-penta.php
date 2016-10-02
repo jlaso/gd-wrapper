@@ -4,7 +4,6 @@ include __DIR__ . '/vendor/autoload.php';
 
 use JLaso\GD\Image;
 use JLaso\GD\Color;
-use JLaso\GD\Point;
 
 $image = new Image(800, 600);
 

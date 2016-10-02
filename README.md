@@ -63,5 +63,13 @@ php sample-text.php && open /tmp/text.png
 
 ![Text example](/doc/text.png)
 
+Example to use palette:
+
+```
+php sample-palette.php && open /tmp/palette.png
+```
+
+![Palette example](/doc/palette.png)
+
 
 
