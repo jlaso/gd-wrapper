@@ -2,6 +2,10 @@
 
 namespace JLaso\GD;
 
+use JLaso\GD\Text\FontRepository;
+use JLaso\GD\Text\Shadow;
+use JLaso\GD\Text\TextTools;
+
 final class Image
 {
     const ORIGIN = 'origin';
@@ -17,6 +21,8 @@ final class Image
     protected $colors;
     /** @var Point[] */
     protected $positions;
+    /** @var FontRepository */
+    protected $fontRepository;
     //---- last used
     /** @var Point */
     protected $position;
@@ -24,6 +30,8 @@ final class Image
     protected $thickness;
     /** @var int */
     protected $color;
+    /** @var string */
+    protected $font;
 
     public function __construct($width, $height, $trueColor = true)
     {
@@ -37,6 +45,40 @@ final class Image
             $this->image = imagecreate($width, $height);
         }
         $this->setOrigin(new Point(0, 0));
+    }
+
+    /**
+     * @return FontRepository
+     */
+    public function getFontRepository()
+    {
+        return $this->fontRepository;
+    }
+
+    /**
+     * @param FontRepository $fontRepository
+     * @return $this
+     */
+    public function setFontRepository($fontRepository)
+    {
+        $this->fontRepository = $fontRepository;
+
+        return $this;
+    }
+
+    /**
+     * @param $font
+     * @return $this
+     */
+    public function setFont($font)
+    {
+        if(preg_match("/\.ttf$/", $font)){
+            $this->font = $font;
+        }else{
+            $this->font = $this->fontRepository->getFontFile($font);
+        }
+
+        return $this;
     }
 
     /**
@@ -65,12 +107,15 @@ final class Image
 
     /**
      * @param $position
+     * @return $this
      * @throws \Exception
      */
     public function moveTo($position)
     {
         $this->position = $this->toPoint($position);
         $this->createPosition(self::LAST_POS, $this->position);
+
+        return $this;
     }
 
     /**
@@ -354,6 +399,48 @@ final class Image
                 return new Rectangle($position, $this->toPoint(array_shift($args)));
                 break;
         }
+    }
+
+    public function writeText($w, $h, $text, Shadow $shadow = null, array $padding = [], $angle = 0)
+    {
+        // figure font-size out
+        $info = TextTools::encloseText($text, $w, $h, $this->font, $padding, $angle);
+        $padding = $info->paddings;
+        $startX = $this->position->x + $padding[1] +
+            ($w - $padding[1] - $padding[3] - $info->textWidth) / 2;
+        $startY = $this->position->y + $padding[0] +
+            ($h - $padding[0] - $padding[2] + $info->textHeight) / 2;
+
+        // write shadow
+        if ($shadow) {
+            $prevColor = $this->color;
+            $this->setColor($shadow->color);
+            // offset expresses percentage
+            $offset = intval($info->fontSize * $shadow->offset);
+            imagettftext(
+                $this->image,
+                $info->fontSize,
+                $angle,
+                $startX + $offset, $startY + $offset,
+                $this->color,
+                $this->font,
+                $text
+            );
+            $this->color = $prevColor;
+        }
+
+        // write text
+        imagettftext(
+            $this->image,
+            $info->fontSize,
+            $angle,
+            $startX, $startY,
+            $this->color,
+            $this->font,
+            $text
+        );
+
+        return $this;
     }
 
 }

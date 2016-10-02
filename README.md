@@ -39,3 +39,29 @@ imagefilledellipse($image, 400, 300, 30, 30, $white);
 imagepng($image, '/tmp/eye.png');
 ```
 
+Example to write ellipses and circles:
+
+```
+php sample-eye.php && open /tmp/eye.png
+```
+
+![Eye example](/doc/eye.png)
+
+Example to write polygons:
+
+```
+php sample-penta.php && open /tmp/penta.png
+```
+
+![Polygon example](/doc/penta-png)
+
+Example to write text: take a look over sample-text.php
+
+```
+php sample-text.php && open /tmp/text.png
+```
+
+![Text example](/doc/text.png)
+
+
+

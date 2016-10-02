@@ -25,4 +25,14 @@ class Point
 
         return $this;
     }
+
+    /**
+     * @param int $deltaX
+     * @param int $deltaY
+     * @return Point
+     */
+    public function cloneAndMove($deltaX, $deltaY)
+    {
+        return new Point($this->x + $deltaX, $this->y + $deltaY);
+    }
 }
