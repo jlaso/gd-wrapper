@@ -276,6 +276,7 @@ final class Image
                 imagefilledarc($this->image, $arg->center->x, $arg->center->y, $arg->radiusX, $arg->radiusY, $arg->start, $arg->end, $this->color, IMG_ARC_PIE);
                 break;
 
+            // http://php.net/manual/es/function.imagefilledarc.php
             case ($arg instanceof Arc):
                 /** @var Arc $arg */
                 imagefilledarc($this->image, $arg->center->x, $arg->center->y, $arg->radiusX, $arg->radiusY, $arg->start, $arg->end, $this->color, null);
@@ -392,6 +393,12 @@ final class Image
         return imagepng($this->image, $fileName);
     }
 
+    /**
+     * @param string $objType
+     * @param mixed $position
+     * @param array ...$args   // http://php.net/manual/en/functions.arguments.php#functions.variable-arg-list
+     * @return ArcPie|Circle|Ellipse|Polygon|Rectangle
+     */
     public function factory($objType, $position, ...$args)
     {
         if (self::POLYGON !== $objType) {

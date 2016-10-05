@@ -20,6 +20,7 @@ $image
     ->fill($image->factory(Image::RECTANGLE, [200,90], [600,472]))
     ->setColor('red')
     ->fill($image->factory(Image::POLYGON, [
+        // http://www.mathopenref.com/coordpolycalc.html
         400,100,
         210,238,
         282,462,

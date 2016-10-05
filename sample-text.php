@@ -10,7 +10,8 @@ use JLaso\GD\Text\FontRepository;
 
 const TEXT_SHADOW = true;
 
-$fontRepository = new FontRepository(['/Library/Fonts']);
+// You can use your system's fonts or download from http://www.1001fonts.com/script-fonts.html for instance
+$fontRepository = new FontRepository(['/Library/Fonts']);  /* /Library/Fonts in OSX */
 
 $image = new Image($w = 800, $h = 600);
 $image->setFontRepository($fontRepository);

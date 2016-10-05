@@ -38,9 +38,10 @@ class Palette
         $names = ['base', '1st-comp', '2nd-comp', '3rd-comp', '4th-comp'];
         $colors = [];
         if (false !== $this->internalPalette) {
+            $index = 0;
             for ($i = 0; $i < 5; $i++) {
                 $c = ltrim($this->coolPalettes[$this->internalPalette][$i], '#');
-                $colors[$names[$i]] = new Color($c);
+                $colors[$names[$index++]] = new Color($c);
                 if(3 == $total){
                     $i++;
                 }

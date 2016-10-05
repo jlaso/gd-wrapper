@@ -1,4 +1,5 @@
 # image
+
 image wrapper for PHP GD image
 
 I created this package with the only intention to write compact and understandable scripts.
@@ -71,5 +72,11 @@ php sample-palette.php && open /tmp/palette.png
 
 ![Palette example](/doc/palette.png)
 
+Internal palettes had been imported from [Jam3/nice-color-palettes](https://github.com/Jam3/nice-color-palettes)
+
+![200 palettes](https://camo.githubusercontent.com/d21f9ee0b3a4ba5dc5fe9b02a3cedb9da686cd3b/68747470733a2f2f692e696d6775722e636f6d2f5859594d3471702e706e67)
+
+
+[How to edit this file](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 
 
